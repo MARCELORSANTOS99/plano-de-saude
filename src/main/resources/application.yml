@@ -1,0 +1,18 @@
+springdoc:
+  swagger-ui:
+    path: /swaager-ui.html
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop  # Use create-drop, update, ou create conforme a necessidade
+  h2:
+    console:
+      enabled: true
