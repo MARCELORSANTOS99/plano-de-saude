@@ -1,13 +1,18 @@
 package com.marcelo.plano_de_saude.entity;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 
 @Entity
@@ -27,12 +32,24 @@ public class Documento implements Serializable {
 	
 	private String descricao;
 	
-	private Date dataInclusao;
+	private Instant dataInclusao;
 	
-	private Date dataAtualizacao;
+	private Instant dataAtualizacao;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Beneficiario beneficiario;
+	
+	@PrePersist
+    protected void onCreate() {
+		dataInclusao = Instant.now();
+        dataAtualizacao = Instant.now();
+    }
+	
+	@PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = Instant.now();
+    }
 
 	
 

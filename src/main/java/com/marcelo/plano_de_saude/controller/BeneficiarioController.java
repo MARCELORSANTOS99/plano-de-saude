@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marcelo.plano_de_saude.dto.BeneficiarioDTO;
 import com.marcelo.plano_de_saude.entity.Beneficiario;
 import com.marcelo.plano_de_saude.entity.Documento;
 import com.marcelo.plano_de_saude.service.BeneficiarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/beneficiario")
@@ -54,7 +57,7 @@ public class BeneficiarioController {
 	
 	
 	@PostMapping
-	public Beneficiario salvar(@RequestBody Beneficiario beneficiario) {
+	public Beneficiario salvar(@RequestBody @Valid BeneficiarioDTO beneficiario) {
 		
 		return beneficiarioService.salvar(beneficiario);
 	}
@@ -77,25 +80,24 @@ public class BeneficiarioController {
 	}
 	
 	@PutMapping(path = "/{idBeneficiario}")
-	public ResponseEntity<?> editar(@RequestBody Beneficiario beneficiarioRequest, @PathVariable Long idBeneficiario){
+	public ResponseEntity<?> editar(@RequestBody @Valid BeneficiarioDTO beneficiarioRequest, @PathVariable Long idBeneficiario){
 		
 		try {
 			
-			System.out.println("Recebido PUT para ID: " + idBeneficiario);
-	        System.out.println("Corpo da solicitação: " + beneficiarioRequest);
+			Beneficiario beneficiario = beneficiarioService.update(idBeneficiario,beneficiarioRequest );
+
 			
-			Beneficiario beneficiario = beneficiarioService.findBeneficiario(idBeneficiario);
 			
 			if(beneficiario != null) {
 				
-				BeanUtils.copyProperties(beneficiarioRequest, beneficiario, "id");
-				beneficiarioService.salvar(beneficiario);
-				 return ResponseEntity.ok(beneficiario);				 
+					
+				 return ResponseEntity.ok(beneficiario);
+				 			 
 			}
 			 
 			 
 		}catch (Exception e) {
-			e.printStackTrace(); // Log da exceção para depuração
+			e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar a solicitação");
 		}
 		
